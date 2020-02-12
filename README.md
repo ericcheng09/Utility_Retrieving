@@ -6,7 +6,7 @@ Scrape the utilities of system and docker containers and upload to influxDB.
 ```shell
 pip install -r requirements.txt
 ```
-Note: You may need to install gcc and python for psutil.
+Note: You may need to install gcc and python-devel for psutil.
 ```
 usage: scraper.py [-h] [--IP IP] [--port PORT] [--db DB] [--user USER]
                   [--pass PASSWORD] [--path PATH] [--disk DISK] [--ID ID]
