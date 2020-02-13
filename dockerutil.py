@@ -4,10 +4,10 @@ import os
 
 class DockerUtil:
 
-    def __init__(self, base_url, includeall, containers):
+    def __init__(self, base_url, include_all, containers):
         self.client = docker.APIClient(base_url=base_url)
-        if includeall:
-            self.containers = self.client.containers()["Id"]
+        if include_all:
+            self.containers = [c["Id"] for c in self.client.containers()]
         else:
             self.containers = containers
         self.host = os.uname()[1]

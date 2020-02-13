@@ -3,7 +3,7 @@ import argparse, configparser
 import signal
 import time
 import hostutil, dockerutil, pmemutil
-
+from distutils.util import strtobool
 
 def signal_handler(signal, frame):
     global interrupted
@@ -29,16 +29,21 @@ client = InfluxDBClient(host=config["BASIC"]["ip"],
 
 source = []
 
-if bool(config["BASIC"]["Host"]):
-    source.append(hostutil.HostUtil())
+if strtobool(config["BASIC"]["Host"]):
+    source.append(hostutil.HostUtil(
+    [path for _, path in config.items("HOST.DISKPATH")],
+    strtobool(config["HOST"]["perdiks"]),
+    [disk for _, disk in config.items("HOST.DISK")])
+    )
 
-if bool(config["BASIC"]["Docker"]):
-    source.append(dockerutil.DockerUtil(config["DOCKER"]["base_url"],
-                                        config["DOCKER"]["include_all"],
-                                        [container for container in config.items("DOCKER.CONTAINERS")])
-                  )
+if strtobool(config["BASIC"]["Docker"]):
+    source.append(dockerutil.DockerUtil(
+        config["DOCKER"]["base_url"],
+        config["DOCKER"]["include_all"],
+        [container for container in config.items("DOCKER.CONTAINERS")])
+    )
 
-if bool(config["BASIC"]["PMEM"]):
+if strtobool(config["BASIC"]["PMEM"]):
     # source.append(pmemutil.PMEM())
     pass
 
@@ -49,7 +54,7 @@ while True:
         break
     time.sleep(1)
     for s in source:
-        source.extend(s.get_data())
+        data.extend(s.get_data())
 
     client.write_points(data)
 client.close()
