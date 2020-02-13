@@ -41,7 +41,6 @@ interrupted = False
 containers = docker_client.containers()["Id"]
 
 
-
 while True:
     data = []
     if interrupted:
