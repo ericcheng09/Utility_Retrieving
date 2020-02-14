@@ -5,6 +5,8 @@ import os
 class HostUtil:
 
     def __init__(self, disk_paths, perdisk, disks):
+        self.host = os.uname()[1]
+
         self.perdisk = perdisk
         self.disks = disks
         self.disk_paths = disk_paths
@@ -23,7 +25,7 @@ class HostUtil:
     def get_data(self):
 
         data = []
-        host = os.uname()[1]
+
 
         # CPU
         cpu_usage = psutil.cpu_percent()
@@ -31,7 +33,7 @@ class HostUtil:
             {
                 "measurement": "CPU",
                 "tags": {
-                    "Host": host,
+                    "Host": self.host,
                     "Source": "Host"
                 },
                 "fields": {
@@ -46,7 +48,7 @@ class HostUtil:
             {
                 "measurement": "Memory",
                 "tags": {
-                    "Host": host,
+                    "Host": self.host,
                     "Source": "Host"
                 },
                 "fields": {
@@ -66,7 +68,7 @@ class HostUtil:
         #         {
         #             "measurement": "Disk",
         #             "tags": {
-        #                 "Host": host,
+        #                 "Host": self.host,
         #                 "Disk/Path": disk_path,
         #                 "Source": "Host"
         #             },
@@ -98,7 +100,7 @@ class HostUtil:
         #             {
         #                 "measurement": "Disk Throughput",
         #                 "tags": {
-        #                     "Host": host,
+        #                     "Host": self.host,
         #                     "Disk": self.disks[idx],
         #                     "Source": "Host"
         #                 },
@@ -121,7 +123,7 @@ class HostUtil:
         #         {
         #             "measurement": "Disk Throughput",
         #             "tags": {
-        #                 "Host": host,
+        #                 "Host": self.host,
         #                 "Disk": self.disks[0],
         #                 "Source": "Host"
         #             },

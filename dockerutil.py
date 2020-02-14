@@ -5,6 +5,7 @@ import os
 class DockerUtil:
 
     def __init__(self, base_url, include_all, containers):
+
         self.client = docker.APIClient(base_url=base_url)
         if include_all:
             self.containers = [c["Id"] for c in self.client.containers()]
