@@ -44,7 +44,7 @@ if strtobool(config["BASIC"]["Docker"]):
     )
 
 if strtobool(config["BASIC"]["PMEM"]):
-    # source.append(pmemutil.PMEM())
+    source.append(pmemutil.PMEM())
     pass
 
 while True:
