@@ -19,7 +19,6 @@ class PMEM():
         # self.devices = []
         # self._get_all_pmem()
         self.sensor_info = {}
-        self._get_sensor_info()
 
 
     # def _get_all_pmem(self): # discover devices
@@ -66,6 +65,7 @@ class PMEM():
         keys = re.findall("[a-zA-Z]+=", output)
         values = re.findall("=[a-zA-Z0-9]+", output)
 
+        self._get_sensor_info()
         for idx, key in enumerate(keys):
             tmp = data_dict.get(key[:len(key) - 1], [])
             tmp.append(values[idx][1:])
