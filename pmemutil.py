@@ -6,15 +6,15 @@ class PMEM():
 
     def __init__(self):
         self.host = os.uname()[1]
-        # self.health_stats_mapping = {
-        #     "Healthy": 0,
-        #     "Noncritical": 1,
-        #     "Critical": 2,
-        #     "Fatal": 3,
-        #     "Non-Functional": 4,
-        #     "Unmanageable": 5,
-        #     "Unknown": 6
-        # }
+        self.health_stats_mapping = {
+            "Healthy": 0,
+            "Noncritical": 1,
+            "Critical": 2,
+            "Fatal": 3,
+            "Non-Functional": 4,
+            "Unmanageable": 5,
+            "Unknown": 6
+        }
         # self.device_info = {}
         # self.devices = []
         # self._get_all_pmem()
@@ -83,7 +83,7 @@ class PMEM():
                     "fields": {
                         "MediaReads": int(data_dict["MediaReads"][idx], 0) * 64,
                         "MediaWrites": int(data_dict["MediaWrites"][idx], 0) * 64,
-                        "Health": self.sensor_info[Dimm]["Health"]["CurrentValue"]
+                        "Health": self.health_stats_mapping[self.sensor_info[Dimm]["Health"]["CurrentValue"]]
                     }
                 }
             )
