@@ -83,7 +83,9 @@ class PMEM():
                     "fields": {
                         "MediaReads": int(data_dict["MediaReads"][idx], 0) * 64,
                         "MediaWrites": int(data_dict["MediaWrites"][idx], 0) * 64,
-                        "Health": self.health_stats_mapping[self.sensor_info[Dimm]["Health"]["CurrentValue"]]
+                        "Health": self.health_stats_mapping[self.sensor_info[Dimm]["Health"]["CurrentValue"]],
+                        "PercentageRemaining": int(self.sensor_info[Dimm]["PercentageRemaining"]["CurrentValue"][:-1]),
+                        "UpTime": int(self.sensor_info[Dimm]["UpTime"]["CurrentValue"][:-1])
                     }
                 }
             )
