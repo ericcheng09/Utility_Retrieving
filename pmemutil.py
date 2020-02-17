@@ -63,13 +63,15 @@ class PMEM():
         output = str(subprocess.check_output("ipmctl show -performance MediaReads,MediaWrites", shell=True))
         data_dict = {}
         keys = re.findall("[a-zA-Z]+=", output)
+        keys = [key[:-1] for key in keys]
         values = re.findall("=[a-zA-Z0-9]+", output)
+        values = [value[1:] for value in values]
 
         self._get_sensor_info()
         for idx, key in enumerate(keys):
-            tmp = data_dict.get(key[:len(key) - 1], [])
-            tmp.append(values[idx][1:])
-            data_dict[key[:len(key) - 1]] = tmp
+            tmp = data_dict.get(key, [])
+            tmp.append(values[idx])
+            data_dict[key] = tmp
 
         for idx, Dimm in enumerate(data_dict["DimmID"]):
             data.append(
