@@ -52,7 +52,7 @@ class PMEM():
             if key == "Capacity":
                 total_size += float(values[idx])
 
-        return size / total_size
+        return size / total_size * 100.0
 
     def _get_sensor_info(self):
         output = str(subprocess.check_output("ipmctl show -a -sensor -dimm", shell=True))
