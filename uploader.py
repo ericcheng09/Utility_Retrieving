@@ -49,13 +49,18 @@ if strtobool(config["BASIC"]["PMEM"]):
 
 
 while True:
-    data = []
+
     if interrupted:
         print("Closing...")
         break
-    time.sleep(1)
+    data = []
+    pre_query = time.time()
     for s in source:
         data.extend(s.get_data())
 
+
+    while time.time() - pre_query < 15.0:
+        # every 15s (at least) upload once
+        pass
     client.write_points(data)
 client.close()

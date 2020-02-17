@@ -25,6 +25,7 @@ class DockerUtil:
                 pre_cpu_usage, pre_cpu_sys_usage = status["cpu_stats"]["cpu_usage"]["total_usage"], \
                                                    status["cpu_stats"]["system_cpu_usage"]
                 status = self.containers_status[container].next()
+
                 CPU = 0.0
                 delta_cpu = status["cpu_stats"]["cpu_usage"]["total_usage"] - pre_cpu_usage
                 delta_cpu_sys = status["cpu_stats"]["system_cpu_usage"] - pre_cpu_sys_usage
