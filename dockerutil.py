@@ -26,12 +26,16 @@ class DockerUtil:
                                                    status["cpu_stats"]["system_cpu_usage"]
                 status = self.containers_status[container].next()
 
+
+
+                # total_usage       : CPU usage by container
+                # system_cpu_usage  : CPU usage of entire system
+                # it needs to be multiplied by num of core, so for a 4 cores, CPU usage can be 0% to 400%
                 CPU = 0.0
                 delta_cpu = status["cpu_stats"]["cpu_usage"]["total_usage"] - pre_cpu_usage
                 delta_cpu_sys = status["cpu_stats"]["system_cpu_usage"] - pre_cpu_sys_usage
                 if delta_cpu > 0 and delta_cpu_sys > 0:
-                    CPU = float(delta_cpu) / float(delta_cpu_sys) * \
-                                 len(status["cpu_stats"]["cpu_usage"]["percpu_usage"]) * 100.0
+                    CPU = float(delta_cpu) / float(delta_cpu_sys) * status["cpu_stats"]["online_cpus"] * 100.0
 
 
                 read_docker, write_docker = 0, 0

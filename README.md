@@ -8,22 +8,16 @@ pip install -r requirements.txt
 ```
 Note: You may need to install gcc and python-devel for psutil.
 ```
-usage: scraper.py [-h] [--IP IP] [--port PORT] [--db DB] [--user USER]
-                  [--pass PASSWORD] [--path PATH] [--disk DISK] [--ID ID]
+usage: uploader.py [-h] [--config CONFIG_PATH]
 
 optional arguments:
-  -h, --help       show this help message and exit
-  --IP IP          IP of database
-  --port PORT      Port of database
-  --db DB          Name of database
-  --user USER      User of database
-  --pass PASSWORD  Password of User
-  --path PATH      Path of mounted disk
-  --disk DISK      Name of monitored disk
-  --ID ID          Container ID to Monitor
+  -h, --help            show this help message and exit
+  --config CONFIG_PATH  path of config file
+
 ```
 
 
 ```shell
-python scraper.py 
+sudo python uploader.py
 ```
+

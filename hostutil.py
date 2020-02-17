@@ -84,7 +84,7 @@ class HostUtil:
 
         # # TODO: Definition of Throughput
         # # Disk throughput
-        # if self.perdisk:
+        # if self.perdisk:                         
         #     for idx, disk in enumerate(self.disks):
         #         disk_IO = tuple(psutil.disk_io_counters(perdisk=True)[disk])
         #         read_bytes_per_sec = 0.0

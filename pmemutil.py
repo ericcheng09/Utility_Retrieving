@@ -1,6 +1,6 @@
 import os
 import subprocess
-import re
+import re, json
 
 class PMEM():
 
@@ -35,6 +35,24 @@ class PMEM():
     #             self.device_info[id] = {}
     #             continue
     #         self.device_info[self.devices[-1]][key] = values[idx]
+
+    def _get_usage(self):
+        output_ndctl = json.loads(str(subprocess.check_output("ndctl list -N", shell=True)))
+        total_size, size = 0.0, 0.0
+        for namespace in output_ndctl:
+            size += namespace["size"]
+
+        output_ipmctl = str(subprocess.check_output("ipmctl show -u B -d Capacity -dimm", shell=True))
+        keys = re.findall("[a-zA-Z]+=", output_ipmctl)
+        keys = [key[:len(key) - 1] for key in keys]
+        values = re.findall("=[a-zA-Z0-9]+]", output_ipmctl)
+        values = [value[1:] for value in values]
+        tmp_dimm = None
+        for idx, key in enumerate(keys):
+            if key == "Capacity":
+                total_size += float(values[idx])
+
+        return size / total_size
 
     def _get_sensor_info(self):
         output = str(subprocess.check_output("ipmctl show -a -sensor -dimm", shell=True))
@@ -92,5 +110,18 @@ class PMEM():
                 }
             )
 
+
+        data.append(
+            {
+                "measurement": "PMEM",
+                "tags": {
+                    "Host": self.host,
+                    "Source": "PMEM"
+                },
+                "fields": {
+                    "Usable Capacity Percentage": self._get_usage()
+                }
+            }
+        )
 
         return data
