@@ -60,6 +60,8 @@ while True:
 
 
     while time.time() - pre_query < 15.0:
+        if interrupted:
+            break
         # every 15s (at least) upload once
         pass
     client.write_points(data)
