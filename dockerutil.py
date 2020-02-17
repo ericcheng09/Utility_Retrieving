@@ -12,26 +12,37 @@ class DockerUtil:
         else:
             self.containers = containers
         self.host = os.uname()[1]
+        self.containers_status = {}
+        for container in self.containers:
+            self.containers_status[container] = self.client.stats(container, decode=True)
 
     def get_data(self):
         data = []
         for container in self.containers:
             try:
-                status = self.client.stats(container, stream=False)
+                status = self.containers_status[container].next()
 
-                pre_cpu_usage, pre_cpu_sys_Usage = status["cpu_stats"]["cpu_usage"]["total_usage"], \
+                pre_cpu_usage, pre_cpu_sys_usage = status["cpu_stats"]["cpu_usage"]["total_usage"], \
                                                    status["cpu_stats"]["system_cpu_usage"]
-                status = self.client.stats(container, stream=False)
+                status = self.containers_status[container].next()
                 CPU = 0.0
                 delta_cpu = status["cpu_stats"]["cpu_usage"]["total_usage"] - pre_cpu_usage
-                delta_cpu_sys = status["cpu_stats"]["system_cpu_usage"] - pre_cpu_sys_Usage
+                delta_cpu_sys = status["cpu_stats"]["system_cpu_usage"] - pre_cpu_sys_usage
                 if delta_cpu > 0 and delta_cpu_sys > 0:
                     CPU = float(delta_cpu) / float(delta_cpu_sys) * \
                                  len(status["cpu_stats"]["cpu_usage"]["percpu_usage"]) * 100.0
-                bytes_io = status["blkio_stats"]["io_service_bytes_recursive"]
 
-                readwrite = [sum([stat["value"] for stat in bytes_io if stat["op"] == "Read"]),
-                             sum([stat["value"] for stat in bytes_io if stat["op"] == "Write"])]
+
+                # bytes_io = status["blkio_stats"]["io_service_bytes_recursive"]
+                read_docker, write_docker = 0, 0
+                for stat in status["blkio_stats"]["io_service_bytes_recursive"]:
+                    if stat["op"] == "Read":
+                        read_docker += int(stat["value"])
+                    elif stat["op"] == "Write":
+                        write_docker += int(stat["value"])
+
+                # readwrite = [sum([stat["value"] for stat in bytes_io if stat["op"] == "Read"]),
+                #              sum([stat["value"] for stat in bytes_io if stat["op"] == "Write"])]
                 data.append(
                     {
                         "measurement": "Docker",
@@ -44,8 +55,8 @@ class DockerUtil:
                             "PIDs": status["pids_stats"]["current"],
                             "Memory": status["memory_stats"]["usage"] / status["memory_stats"]["limit"],
                             "CPU": CPU,
-                            "Disk Input": readwrite[0],
-                            "Disk Output": readwrite[1]
+                            "Disk Read": read_docker,
+                            "Disk Write": write_docker
 
                         }
                     }

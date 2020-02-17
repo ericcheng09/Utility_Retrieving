@@ -47,7 +47,7 @@ class PMEM():
         global tmp_id, tmp_type
         for idx, key in enumerate(keys):
             if key == "DimmID":
-                dimmid = values[idx].replace("-","")
+                dimmid = values[idx].replace("-", "")
                 tmp_id = dimmid
                 self.sensor_info[dimmid] = {}
                 continue
