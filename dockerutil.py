@@ -51,7 +51,7 @@ class DockerUtil:
                         },
                         "fields": {
                             "PIDs": status["pids_stats"]["current"],
-                            "Memory": float(status["memory_stats"]["usage"]) / float(["memory_stats"]["limit"]) * 100.0,
+                            "Memory": float(status["memory_stats"]["usage"]) / float(status["memory_stats"]["limit"]) * 100.0,
                             "CPU": CPU,
                             "Disk Read": read_docker,
                             "Disk Write": write_docker
@@ -59,6 +59,7 @@ class DockerUtil:
                         }
                     }
                 )
-            except:
+            except Exception as e:
+                print(e)
                 print("Container {}'s status cannot be retrieved".format(container[:12]))
         return data
