@@ -44,7 +44,7 @@ class PMEM():
         values = re.findall("=.+\n", output)
         values = [value[1:- 1] for value in values]
 
-        global tmp_id, tmp_type
+        tmp_id, tmp_type = None, None
         for idx, key in enumerate(keys):
             if key == "DimmID":
                 dimmid = values[idx].replace("-", "")

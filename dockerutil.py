@@ -34,7 +34,6 @@ class DockerUtil:
                                  len(status["cpu_stats"]["cpu_usage"]["percpu_usage"]) * 100.0
 
 
-                # bytes_io = status["blkio_stats"]["io_service_bytes_recursive"]
                 read_docker, write_docker = 0, 0
                 for stat in status["blkio_stats"]["io_service_bytes_recursive"]:
                     if stat["op"] == "Read":
@@ -42,8 +41,6 @@ class DockerUtil:
                     elif stat["op"] == "Write":
                         write_docker += int(stat["value"])
 
-                # readwrite = [sum([stat["value"] for stat in bytes_io if stat["op"] == "Read"]),
-                #              sum([stat["value"] for stat in bytes_io if stat["op"] == "Write"])]
                 data.append(
                     {
                         "measurement": "Docker",
@@ -54,7 +51,7 @@ class DockerUtil:
                         },
                         "fields": {
                             "PIDs": status["pids_stats"]["current"],
-                            "Memory": status["memory_stats"]["usage"] / status["memory_stats"]["limit"],
+                            "Memory": float(status["memory_stats"]["usage"]) / float(["memory_stats"]["limit"]) * 100.0,
                             "CPU": CPU,
                             "Disk Read": read_docker,
                             "Disk Write": write_docker
