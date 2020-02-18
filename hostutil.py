@@ -25,40 +25,57 @@ class HostUtil:
     def get_data(self):
 
         data = []
-
-
-        # CPU
         cpu_usage = psutil.cpu_percent()
-        data.append(
-            {
-                "measurement": "CPU",
-                "tags": {
-                    "Host": self.host,
-                    "Source": "Host"
-                },
-                "fields": {
-                    "CPU": cpu_usage
-                }
-            }
-        )
-
-        # Memory
         mem_total, mem_available, mem_usage = psutil.virtual_memory()[:3]
         data.append(
             {
-                "measurement": "Memory",
+                "measurement": "Host",
                 "tags": {
                     "Host": self.host,
-                    "Source": "Host"
                 },
                 "fields": {
-                    "Total": mem_total,
-                    "Available": mem_available,
-                    "Used Percentage": mem_usage
-
+                    "CPU": cpu_usage,
+                    "Total Memory": mem_total,
+                    "Available Memory": mem_available,
+                    "Used Memory Percentage": mem_usage
                 }
             }
         )
+
+
+
+        # CPU
+        # cpu_usage = psutil.cpu_percent()
+        # data.append(
+        #     {
+        #         "measurement": "CPU",
+        #         "tags": {
+        #             "Host": self.host,
+        #             "Source": "Host"
+        #         },
+        #         "fields": {
+        #             "CPU": cpu_usage
+        #         }
+        #     }
+        # )
+
+        # Memory
+        # mem_total, mem_available, mem_usage = psutil.virtual_memory()[:3]
+        # data.append(
+        #     {
+        #         "measurement": "Memory",
+        #         "tags": {
+        #             "Host": self.host,
+        #             "Source": "Host"
+        #         },
+        #         "fields": {
+        #             "Total": mem_total,
+        #             "Available": mem_available,
+        #             "Used Percentage": mem_usage
+        #
+        #         }
+        #     }
+        # )
 
         # # Disk usage
         # for disk_path in self.disk_paths:

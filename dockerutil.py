@@ -50,7 +50,6 @@ class DockerUtil:
                         "measurement": "Docker",
                         "tags": {
                             "Host": self.host,
-                            "Source": "Docker",
                             "Container": container,
                         },
                         "fields": {

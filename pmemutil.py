@@ -18,7 +18,7 @@ class PMEM():
         # self.device_info = {}
         # self.devices = []
         # self._get_all_pmem()
-        self.sensor_info = {}
+        # self.sensor_info = {}
 
 
     # def _get_all_pmem(self): # discover devices
@@ -52,9 +52,10 @@ class PMEM():
             if key == "Capacity":
                 total_size += float(values[idx])
 
-        return (1 - size / total_size) * 100.0
+        return total_size, (1 - size / total_size) * 100.0
 
     def _get_sensor_info(self):
+        sensor_info = {}
         output = str(subprocess.check_output("ipmctl show -a -sensor -dimm", shell=True))
         keys = re.findall("[a-zA-Z]+=", output)
         keys = [key[:- 1] for key in keys]
@@ -67,13 +68,14 @@ class PMEM():
             if key == "DimmID":
                 dimmid = values[idx].replace("-", "")
                 tmp_id = dimmid
-                self.sensor_info[dimmid] = {}
+                sensor_info[dimmid] = {}
                 continue
             elif key == "Type":
                 tmp_type = values[idx]
-                self.sensor_info[tmp_id][tmp_type] = {}
+                sensor_info[tmp_id][tmp_type] = {}
                 continue
-            self.sensor_info[tmp_id][tmp_type][key] = values[idx]
+            sensor_info[tmp_id][tmp_type][key] = values[idx]
+        return sensor_info
 
 
     def get_data(self):
@@ -85,7 +87,7 @@ class PMEM():
         values = re.findall("=[a-zA-Z0-9]+", output)
         values = [value[1:] for value in values]
 
-        self._get_sensor_info()
+        sensor_info = self._get_sensor_info()
         for idx, key in enumerate(keys):
             tmp = data_dict.get(key, [])
             tmp.append(values[idx])
@@ -98,28 +100,33 @@ class PMEM():
                     "tags": {
                         "Host": self.host,
                         "DIMM": Dimm,
-                        "Source": "PMEM"
+                        "Type": "Physical"
                     },
                     "fields": {
                         "MediaReads": int(data_dict["MediaReads"][idx], 0) * 64,
                         "MediaWrites": int(data_dict["MediaWrites"][idx], 0) * 64,
-                        "Health": self.health_stats_mapping[self.sensor_info[Dimm]["Health"]["CurrentValue"]],
-                        "PercentageRemaining": int(self.sensor_info[Dimm]["PercentageRemaining"]["CurrentValue"][:-1]),
-                        "UpTime": int(self.sensor_info[Dimm]["UpTime"]["CurrentValue"][:-1])
+
+                        "Health": self.health_stats_mapping[sensor_info[Dimm]["Health"]["CurrentValue"]],
+                        "PercentageRemaining": int(sensor_info[Dimm]["PercentageRemaining"]["CurrentValue"][:-1]),
+                        "UpTime": int(sensor_info[Dimm]["UpTime"]["CurrentValue"][:-1]),
+                        "MediaTemperature": int(sensor_info[Dimm]["MediaTemperature"]["CurrentValue"][:-1]),
+                        "ControllerTemperature": int(sensor_info[Dimm]["ControllerTemperature"]["CurrentValue"][-1])
+
                     }
                 }
             )
 
-
+        usage = self._get_usage()
         data.append(
             {
                 "measurement": "PMEM",
                 "tags": {
                     "Host": self.host,
-                    "Source": "PMEM"
+                    "Total": int(usage[0]) / 1024 / 1024 / 1024,  # convert to GiB
+                    "Type": "Virtual"
                 },
                 "fields": {
-                    "Usable Capacity Percentage": self._get_usage()
+                    "Usable Capacity Percentage": usage[1]
                 }
             }
         )
