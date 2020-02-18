@@ -110,7 +110,7 @@ class PMEM():
                         "PercentageRemaining": int(sensor_info[Dimm]["PercentageRemaining"]["CurrentValue"][:-1]),
                         "UpTime": int(sensor_info[Dimm]["UpTime"]["CurrentValue"][:-1]),
                         "MediaTemperature": int(sensor_info[Dimm]["MediaTemperature"]["CurrentValue"][:-1]),
-                        "ControllerTemperature": int(sensor_info[Dimm]["ControllerTemperature"]["CurrentValue"][-1])
+                        "ControllerTemperature": int(sensor_info[Dimm]["ControllerTemperature"]["CurrentValue"][:-1])
 
                     }
                 }
