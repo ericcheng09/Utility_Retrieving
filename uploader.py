@@ -30,11 +30,7 @@ client = InfluxDBClient(host=config["BASIC"]["ip"],
 source = []
 
 if strtobool(config["BASIC"]["Host"]):
-    source.append(hostutil.HostUtil(
-    [path for _, path in config.items("HOST.DISKPATH")],
-    strtobool(config["HOST"]["perdiks"]),
-    [disk for _, disk in config.items("HOST.DISK")])
-    )
+    source.append(hostutil.HostUtil())
 
 if strtobool(config["BASIC"]["Docker"]):
     source.append(dockerutil.DockerUtil(
