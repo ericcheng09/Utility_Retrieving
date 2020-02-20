@@ -26,8 +26,6 @@ class DockerUtil:
                                                    status["cpu_stats"]["system_cpu_usage"]
                 status = self.containers_status[container].next()
 
-
-
                 # total_usage       : CPU usage by container
                 # system_cpu_usage  : CPU usage of entire system
                 # it needs to be multiplied by num of core, so for a 4 cores, CPU usage can be 0% to 400%

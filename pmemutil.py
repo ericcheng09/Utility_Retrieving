@@ -52,7 +52,7 @@ class PMEM():
             if key == "Capacity":
                 total_size += float(values[idx])
 
-        return total_size, (1 - size / total_size) * 100.0
+        return total_size, (1 - size / total_size) * 100.0, output_ipmctl
 
     def _get_sensor_info(self):
         sensor_info = {}
@@ -130,5 +130,20 @@ class PMEM():
                 }
             }
         )
+
+
+        for namespace in usage[2]:
+            data.append(
+                {
+                    "measurement": "Namespace",
+                    "tags": {
+                        "Host": self.host,
+                        "Block Device": namespace["blockdev"]
+                    },
+                    "fields": {
+                        "size": int(namespace["size"])
+                    }
+                }
+            )
 
         return data
