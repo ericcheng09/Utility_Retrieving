@@ -52,7 +52,7 @@ class PMEM():
             if key == "Capacity":
                 total_size += float(values[idx])
 
-        return total_size, (1 - size / total_size) * 100.0, output_ipmctl
+        return total_size, (1 - size / total_size) * 100.0, output_ndctl
 
     def _get_sensor_info(self):
         sensor_info = {}
