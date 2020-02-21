@@ -30,8 +30,8 @@ class HostUtil:
         disks = psutil.disk_partitions()
         for disk in disks:
             device = disk[0].split("/")[-1]
-            # if disk[1] != None and disk[1] != "" and not device.startswith("loop"):
-            if disk[1] != None and disk[1] != "":
+            if disk[1] != None and disk[1] != "" and not device.startswith("loop"):
+            # if disk[1] != None and disk[1] != "":
                 device_usage = psutil.disk_usage(disk[1])
                 data.append(
                     {
@@ -52,18 +52,19 @@ class HostUtil:
         # ex:
         # {'disk0': sdiskio(read_count=12851269, write_count=11015139, read_bytes=337039777792, write_bytes=307435831296, read_time=7224758, write_time=2460473)}
         for disk, values in disk_IO.items():
-            data.append(
-                {
-                    "measurement": "Disk IO",
-                    "tags": {
-                        "Host": self.host,
-                        "Disk": disk
-                    },
-                    "fields": {
-                        "Read": values[2],
-                        "Write": values[3]
+            if not disk.startswith("loop"):
+                data.append(
+                    {
+                        "measurement": "Disk IO",
+                        "tags": {
+                            "Host": self.host,
+                            "Disk": disk
+                        },
+                        "fields": {
+                            "Read": values[2],
+                            "Write": values[3]
+                        }
                     }
-                }
-            )
+                )
 
         return data
