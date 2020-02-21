@@ -25,9 +25,9 @@ Docker		= True                          ; Retrieve containers' utilities
 PMEM		= True                          ; Retrieve PMEMs' utilities
 ip		    = 127.0.0.1                     ; IP of machine that hosts database
 port		= 8086                          ; port of machine that hosts database
-database	= PM_Demo                       ; Name of the database
-user		= edci                          ; Username of the database
-password	= edci                          ; Password of the database
+database	= db_name                       ; Name of the database
+user		= user                          ; Username of the database
+password	= password                          ; Password of the database
 [DOCKER]
 base_url    = unix://var/run/docker.sock    ; URL to the Docker server
 include_all = True                          ; if true, then all the containers' info will be retrieved
