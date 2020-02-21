@@ -29,7 +29,9 @@ class HostUtil:
 
         disks = psutil.disk_partitions()
         for disk in disks:
-            if disk[1] != None or disk[1] != "":
+            device = disk[0].split("/")[-1]
+            # if disk[1] != None and disk[1] != "" and not device.startswith("loop"):
+            if disk[1] != None and disk[1] != "":
                 device_usage = psutil.disk_usage(disk[1])
                 data.append(
                     {
