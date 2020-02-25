@@ -131,7 +131,6 @@ class PMEM():
             }
         )
 
-
         for namespace in usage[2]:
             data.append(
                 {

@@ -42,10 +42,7 @@ if strtobool(config["BASIC"]["Docker"]):
 if strtobool(config["BASIC"]["PMEM"]):
     source.append(pmemutil.PMEM())
 
-
-
 while True:
-
     if interrupted:
         print("Closing...")
         break
@@ -53,7 +50,6 @@ while True:
     pre_query = time.time()
     for s in source:
         data.extend(s.get_data())
-
 
     while time.time() - pre_query < 15.0:
         if interrupted:

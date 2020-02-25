@@ -27,6 +27,7 @@ class HostUtil:
             }
         )
 
+        # Retrieve all disk info except loop devices
         disks = psutil.disk_partitions()
         for disk in disks:
             device = disk[0].split("/")[-1]
@@ -49,8 +50,9 @@ class HostUtil:
                 )
 
         disk_IO = psutil.disk_io_counters(perdisk=True)
-        # ex:
-        # {'disk0': sdiskio(read_count=12851269, write_count=11015139, read_bytes=337039777792, write_bytes=307435831296, read_time=7224758, write_time=2460473)}
+        # example:
+        # {'disk0': sdiskio(read_count=12851269, write_count=11015139, read_bytes=337039777792,
+        #                   write_bytes=307435831296, read_time=7224758, write_time=2460473)}
         for disk, values in disk_IO.items():
             if not disk.startswith("loop"):
                 data.append(

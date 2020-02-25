@@ -5,11 +5,12 @@ import os
 class DockerUtil:
 
     def __init__(self, base_url, include_all, containers):
-
         self.client = docker.APIClient(base_url=base_url)
         if include_all:
+            # include all containers
             self.containers = [c["Id"] for c in self.client.containers()]
         else:
+            # include specific containers listed in config.ini
             self.containers = containers
         self.host = os.uname()[1]
         self.containers_status = {}
@@ -20,8 +21,9 @@ class DockerUtil:
         data = []
         for container in self.containers:
             try:
-                status = self.containers_status[container].next()
 
+                # Get CPU info
+                status = self.containers_status[container].next()
                 pre_cpu_usage, pre_cpu_sys_usage = status["cpu_stats"]["cpu_usage"]["total_usage"], \
                                                    status["cpu_stats"]["system_cpu_usage"]
                 status = self.containers_status[container].next()
@@ -35,7 +37,7 @@ class DockerUtil:
                 if delta_cpu > 0 and delta_cpu_sys > 0:
                     CPU = float(delta_cpu) / float(delta_cpu_sys) * status["cpu_stats"]["online_cpus"] * 100.0
 
-
+                # Get Read/Write info
                 read_docker, write_docker = 0, 0
                 for stat in status["blkio_stats"]["io_service_bytes_recursive"]:
                     if stat["op"] == "Read":
@@ -52,6 +54,7 @@ class DockerUtil:
                         },
                         "fields": {
                             "PIDs": status["pids_stats"]["current"],
+                            # get Memory Usage
                             "Memory": float(status["memory_stats"]["usage"]) / float(status["memory_stats"]["limit"]) * 100.0,
                             "CPU": CPU,
                             "Disk Read": read_docker,
